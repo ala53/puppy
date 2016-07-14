@@ -301,3 +301,10 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.idb
+CameraView/CameraView/Debug (Optimized)/CameraView.tlog/link.command.1.tlog
+*.tlog
+CameraView/Debug (Optimized)/opencv_highgui2413d.dll
+CameraView/Debug (Optimized)/opencv_imgproc2413d.dll
+CameraView/Debug (Optimized)/opencv_core2413d.dll
+nupic-0.5.4.zip

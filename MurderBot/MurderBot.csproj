@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,6 +24,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,8 +36,15 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DotImaging.Drawing, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\DotImaging.Drawing.4.8.1\lib\net45\DotImaging.Drawing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DotImaging.GenericImage, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\DotImaging.GenericImage.4.8.1\lib\net45\DotImaging.GenericImage.dll</HintPath>
       <Private>True</Private>
@@ -69,7 +81,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\DotImaging.IO.4.8.1\build\DotImaging.IO.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\DotImaging.IO.4.8.1\build\DotImaging.IO.targets'))" />
+    <Error Condition="!Exists('packages\DotImaging.Drawing.4.8.1\build\DotImaging.Drawing.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\DotImaging.Drawing.4.8.1\build\DotImaging.Drawing.targets'))" />
   </Target>
+  <Import Project="packages\DotImaging.Drawing.4.8.1\build\DotImaging.Drawing.targets" Condition="Exists('packages\DotImaging.Drawing.4.8.1\build\DotImaging.Drawing.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
