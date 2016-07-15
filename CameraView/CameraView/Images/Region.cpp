@@ -19,17 +19,17 @@ void Region::MatchSimilarBlocks()
 	for (int i = 1; i < BlockCount; i++) {
 		BlockPresence presence = BLOCK_PRESENT;
 		//Compare with block to left
-		if (Blocks[i].SimilarTo(Blocks[i - 1], SimilarBlockThreshold)) {
+		if (Block::SimilarTo(Blocks[i], Blocks[i - 1], SimilarBlockThreshold)) {
 			presence = BLOCK_LEFT_REPRESENTS;
 			Blocks[i] = Blocks[i - 1];
 		}
 		//Compare with block above -- assuming this isn't in the first row
-		else if (i - BlocksPerRow > 0 && Blocks[i].SimilarTo(Blocks[i - BlocksPerRow], SimilarBlockThreshold)) {
+		else if (i - BlocksPerRow > 0 && Block::SimilarTo(Blocks[i], Blocks[i - BlocksPerRow], SimilarBlockThreshold)) {
 			presence = BLOCK_ABOVE_REPRESENTS;
 			Blocks[i] = Blocks[i - BlocksPerRow];
 		}
 		//Compare with block above and to the left -- assuming this isn't in the first row
-		else if (i - 1 - BlocksPerRow > 0 && Blocks[i].SimilarTo(Blocks[i - 1 - BlocksPerRow], SimilarBlockThreshold)) {
+		else if (i - 1 - BlocksPerRow > 0 && Block::SimilarTo(Blocks[i],Blocks[i - 1 - BlocksPerRow], SimilarBlockThreshold)) {
 			presence = BLOCK_ABOVE_LEFT_REPRESENTS;
 			Blocks[i] = Blocks[i - 1 - BlocksPerRow];
 		}
@@ -52,7 +52,7 @@ bool Region::SimilarTo(Region & region, int similarityThresholdTotal, int simila
 		return false;
 	//Or if the block level differences are too large
 	for (int i = 0; i < BlockCount; i++) {
-		if (Blocks[i].GetSimilarity(region.Blocks[i]) > similarityThresholdPerBlock)
+		if (Block::DifferenceFactor(Blocks[i], region.Blocks[i]) > similarityThresholdPerBlock)
 			return false;
 	}
 	//The two regions are close enough

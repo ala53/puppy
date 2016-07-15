@@ -238,6 +238,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Array2D.h" />
+    <ClInclude Include="Images\ImageDiff.h" />
     <ClInclude Include="Images\Encoder.h" />
     <ClInclude Include="Images\Decoder.h" />
     <ClInclude Include="Images\Block.h" />

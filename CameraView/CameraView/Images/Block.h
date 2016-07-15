@@ -75,14 +75,14 @@ public:
 	}
 
 	//Compares 2 blocks and returns whether they fall within the similarity threshold.
-	inline bool SimilarTo(Block& other, int similarityThreshold) {
+	inline static bool SimilarTo(Block& me, Block& other, int similarityThreshold) {
 		//Kept in header file for performance (better inlining heuristics)
 		//Not a perfect or even fair comparison
-		return abs(other.PixelValues - PixelValues) < similarityThreshold;
+		return DifferenceFactor(me, other) < similarityThreshold;
 	}
 	//Gets the difference factor between the two blocks
-	inline int GetSimilarity(Block& other) {
-		return abs(other.PixelValues - PixelValues);
+	inline static int DifferenceFactor(Block& me, Block& other) {
+		return abs(other.PixelValues - me.PixelValues);
 	}
 };
 

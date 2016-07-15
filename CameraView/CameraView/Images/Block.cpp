@@ -5,6 +5,7 @@
 void Block::FindDistinctColors(BGRColor* colorData, BGRColor* color1, BGRColor* color2)
 {
 	//Finds the two most distinct colors in the data block
+	//You'd expect averages to be better, but somehow they're not
 	BGRColor low = BGRColor(255, 255, 255);
 	BGRColor high = BGRColor(0, 0, 0);
 

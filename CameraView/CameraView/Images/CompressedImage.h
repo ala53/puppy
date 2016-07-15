@@ -56,6 +56,8 @@
 *   Then, the raw regions are written into the stream, in top-left to bottom-right order.
 */
 
+class ImageDiff;
+
 //Represents an image compressed to use less bandwidth in transit
 class CompressedImage
 {
@@ -70,15 +72,15 @@ private:
 	int _RegionsHeight;
 	//A temporary array initialized on the first SetData() call
 	BGRColor* _TemporaryArray = nullptr;
+	Array2D<Region> _Regions;
 public:
-	Array2D<Region>* Regions = nullptr;
 
 	inline int Width() { return _RegionsWidth * Region::Width; }
 	inline int Height() { return _RegionsHeight * Region::Height; }
 	inline int RegionsWide() { return _RegionsWidth; }
 	inline int RegionsTall() { return _RegionsHeight; }
 
-	inline Region& GetRegion(int x, int y) { return Regions->Get(x, y); }
+	inline Region& GetRegion(int x, int y) { return _Regions.Get(x, y); }
 
 	CompressedImage(int width, int height);
 	~CompressedImage();
@@ -88,6 +90,10 @@ public:
 
 	//Computes some useful statistics on the image. Expensive! Iterates over the entire image.
 	void GetStatistics(int* sizeBytes, int* sizeBytesWithoutDeduplication, int* deduplicatedBlockCount, int* totalBlockCount);
+
+	//Computes some useful statistics on the image. Expensive! Iterates over the entire image.
+	void GetStatistics(ImageDiff & differences, int * sizeBytes, int * sizeBytesWithoutDeduplication, int * deduplicatedBlockCount, int * totalBlockCount, int* deduplicatedRegionCount, int* totalRegionCount);
+
 private:
 	//Reorders the pixel data from openCV into a series of "chunks" in memory
 	void RearrangeRGBData(BGRColor* input, BGRColor* output);

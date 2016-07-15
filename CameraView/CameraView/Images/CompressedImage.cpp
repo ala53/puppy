@@ -1,20 +1,19 @@
 #include "CompressedImage.h"
+#include "ImageDiff.h"
 
 ThreadPool* CompressedImage::_Pool = nullptr;
 
-CompressedImage::CompressedImage(int width, int height)
+CompressedImage::CompressedImage(int width, int height) : _Regions(width / Region::Width, height / Region::Height)
 {
 	_InternalWidth = width;
 	_InternalHeight = height;
 	_RegionsWidth = width / Region::Width;
 	_RegionsHeight = height / Region::Height;
-	Regions = new Array2D<Region>(RegionsWide(), RegionsTall());
 }
 
 CompressedImage::~CompressedImage()
 {
 	delete[] _TemporaryArray;
-	delete Regions;
 }
 
 void CompressedImage::SetData(BGRColor * colorData)
@@ -110,10 +109,10 @@ void CompressedImage::BuildRegions(BGRColor* blockArranged) {
 		futures.push_back(
 			_Pool->enqueue(
 				[](int y, CompressedImage* image, BGRColor* blockArrangedColors, int bytesPerReg) {
-					for (int x = 0; x < image->RegionsWide(); x++) {
-						image->GetRegion(x, y) = Region(&blockArrangedColors[(y * image->RegionsWide() * bytesPerReg) + x * bytesPerReg]);
-						//And increment for the next block
-						//blockArranged += Region::BlockCount * Block::PixelCount;
+			for (int x = 0; x < image->RegionsWide(); x++) {
+				image->GetRegion(x, y) = Region(&blockArrangedColors[(y * image->RegionsWide() * bytesPerReg) + x * bytesPerReg]);
+				//And increment for the next block
+				//blockArranged += Region::BlockCount * Block::PixelCount;
 			}
 		}, y, this, blockArranged, bytesPerRegion));
 	}
@@ -139,6 +138,44 @@ void CompressedImage::GetStatistics(int* sizeBytes, int* sizeBytesWithoutDedupli
 			*sizeBytes += Region::BlockTableSizeBytes;
 			//Iterate over the region
 			Region& region = GetRegion(regionX, regionY);
+			for (int blockY = 0; blockY < Region::BlocksPerColumn; blockY++) {
+				for (int blockX = 0; blockX < Region::BlocksPerRow; blockX++)
+				{
+					//And, for each block, add its size if it's not deduplicated
+					if (region.IsBlockPresent(blockX, blockY))
+						*sizeBytes += Block::SizeBytes;
+					else
+						*deduplicatedBlockCount += 1;
+				}
+			}
+		}
+	}
+}
+
+void CompressedImage::GetStatistics(ImageDiff & differences, int * sizeBytes, int * sizeBytesWithoutDeduplication, int * deduplicatedBlockCount, int * totalBlockCount, int* deduplicatedRegionCount, int* totalRegionCount)
+{
+	*sizeBytes = 0;
+	*sizeBytesWithoutDeduplication =
+		RegionsTall() * RegionsWide() * Region::BlockTableSizeBytes +
+		RegionsTall() * RegionsWide() * Region::BlockCount * Block::SizeBytes;
+
+	*deduplicatedBlockCount = 0;
+	*deduplicatedRegionCount = 0;
+	*totalBlockCount = RegionsTall() * RegionsWide() * Region::BlockCount;
+	*totalRegionCount = RegionsTall() * RegionsWide();
+
+	for (int regionY = 0; regionY < RegionsTall(); regionY++) {
+		for (int regionX = 0; regionX < RegionsWide(); regionX++) {
+			//Iterate over the region
+			Region& region = GetRegion(regionX, regionY);
+			//Check if the two regions are similar enough
+			if (differences.AreSimilar(regionX, regionY)) {
+				*deduplicatedRegionCount += 1;
+				continue;
+			}
+			//Add the region overhead
+			*sizeBytes += Region::BlockTableSizeBytes;
+			//And iterate over the blocks if the regions are not identical
 			for (int blockY = 0; blockY < Region::BlocksPerColumn; blockY++) {
 				for (int blockX = 0; blockX < Region::BlocksPerRow; blockX++)
 				{

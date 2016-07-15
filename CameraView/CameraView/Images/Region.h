@@ -33,7 +33,7 @@ public:
 		BlockTableSizeBytes = BlockTableSizeBits / 8,
 		SizeBits = BlockTableSizeBits + Block::SizeBits * BlockCount, //128 bit block table + blocks
 		SizeBytes = SizeBits / 8,
-		SimilarBlockThreshold = 64; //To be tuned as needed
+		SimilarBlockThreshold = 32; //To be tuned as needed
 
 	//The block presence table. Explains whether any block can be represented by its neighbors via BlockPresence enum
 	uint8_t BlockTable[BlockTableSizeBytes] = {};
@@ -47,11 +47,11 @@ public:
 	~Region();
 
 	inline BlockPresence BlockPresenceStatus(int x, int y) {
-		int i = y * Region::BlocksPerRow + x;
+		int i = y * BlocksPerRow + x;
 		int byteOffset = i / 4;
 		int shiftAmount = (i % 4) * 2;
 
-		uint8_t byte = BlockTable[i];
+		uint8_t byte = BlockTable[byteOffset];
 		byte >>= shiftAmount;
 		byte &= 0b00000011;
 		return (BlockPresence)byte;

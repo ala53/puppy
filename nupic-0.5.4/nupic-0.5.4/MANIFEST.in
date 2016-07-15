@@ -1,0 +1,11 @@
+include external/common/requirements.txt
+include .nupic_modules
+include *.md
+include *.txt
+include VERSION
+
+recursive-include external/darwin64 *.a
+recursive-include external/linux64 *.a
+
+recursive-include src/nupic/datafiles *.csv *.txt
+recursive-include src/nupic *.capnp *.json *.tpl *.txt *.xml
