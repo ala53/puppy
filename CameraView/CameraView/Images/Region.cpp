@@ -19,17 +19,17 @@ void Region::MatchSimilarBlocks()
 	for (int i = 1; i < BlockCount; i++) {
 		BlockPresence presence = BLOCK_PRESENT;
 		//Compare with block to left
-		if (Block::SimilarTo(Blocks[i], Blocks[i - 1], SimilarBlockThreshold)) {
+		if (Block::SimilarTo(Blocks[i], Blocks[i - 1], SimilarBlockPixelThreshold, SimilarBlockTotalThreshold)) {
 			presence = BLOCK_LEFT_REPRESENTS;
 			Blocks[i] = Blocks[i - 1];
 		}
 		//Compare with block above -- assuming this isn't in the first row
-		else if (i - BlocksPerRow > 0 && Block::SimilarTo(Blocks[i], Blocks[i - BlocksPerRow], SimilarBlockThreshold)) {
+		else if (i - BlocksPerRow > 0 && Block::SimilarTo(Blocks[i], Blocks[i - BlocksPerRow], SimilarBlockPixelThreshold, SimilarBlockTotalThreshold)) {
 			presence = BLOCK_ABOVE_REPRESENTS;
 			Blocks[i] = Blocks[i - BlocksPerRow];
 		}
 		//Compare with block above and to the left -- assuming this isn't in the first row
-		else if (i - 1 - BlocksPerRow > 0 && Block::SimilarTo(Blocks[i],Blocks[i - 1 - BlocksPerRow], SimilarBlockThreshold)) {
+		else if (i - 1 - BlocksPerRow > 0 && Block::SimilarTo(Blocks[i],Blocks[i - 1 - BlocksPerRow], SimilarBlockPixelThreshold, SimilarBlockTotalThreshold)) {
 			presence = BLOCK_ABOVE_LEFT_REPRESENTS;
 			Blocks[i] = Blocks[i - 1 - BlocksPerRow];
 		}

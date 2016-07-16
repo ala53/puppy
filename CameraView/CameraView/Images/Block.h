@@ -75,10 +75,23 @@ public:
 	}
 
 	//Compares 2 blocks and returns whether they fall within the similarity threshold.
-	inline static bool SimilarTo(Block& me, Block& other, int similarityThreshold) {
+	inline static bool SimilarTo(Block& me, Block& other, int similarityThresholdPixel, int similarityThresholdTotal) {
 		//Kept in header file for performance (better inlining heuristics)
 		//Not a perfect or even fair comparison
-		return DifferenceFactor(me, other) < similarityThreshold;
+
+		//return DifferenceFactor(me, other) < similarityThreshold;
+
+		auto factor = DifferenceFactor(me, other);
+
+		if (factor > similarityThresholdTotal) return false;
+
+		int diff = 0;
+		for (int y = 0; y < Block::Height; y++)
+			for (int x = 0; x < Block::Width; x++) {
+				diff += abs(me.GetBlendFactor(x, y) - other.GetBlendFactor(x, y));
+			}
+
+		return diff < similarityThresholdPixel;
 	}
 	//Gets the difference factor between the two blocks
 	inline static int DifferenceFactor(Block& me, Block& other) {

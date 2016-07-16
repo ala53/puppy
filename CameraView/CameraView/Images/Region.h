@@ -24,8 +24,8 @@ public:
 	};
 
 	static const int
-		Width = Block::Width * 8,
-		Height = Block::Height * 8,
+		Width = Block::Width * 4,
+		Height = Block::Height * 4,
 		BlocksPerRow = Width / Block::Width,
 		BlocksPerColumn = Height / Block::Height,
 		BlockCount = BlocksPerRow * BlocksPerColumn,
@@ -33,7 +33,8 @@ public:
 		BlockTableSizeBytes = BlockTableSizeBits / 8,
 		SizeBits = BlockTableSizeBits + Block::SizeBits * BlockCount, //128 bit block table + blocks
 		SizeBytes = SizeBits / 8,
-		SimilarBlockThreshold = 32; //To be tuned as needed
+		SimilarBlockPixelThreshold = 24,
+		SimilarBlockTotalThreshold = 128; //To be tuned as needed
 
 	//The block presence table. Explains whether any block can be represented by its neighbors via BlockPresence enum
 	uint8_t BlockTable[BlockTableSizeBytes] = {};

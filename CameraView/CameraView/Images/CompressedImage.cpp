@@ -118,7 +118,7 @@ void CompressedImage::BuildRegions(BGRColor* blockArranged) {
 	}
 
 	//And wait for all the enqueued objects
-	for (int i = 0; i < futures.size(); i++)
+	for (size_t i = 0; i < futures.size(); i++)
 		futures[i].wait();
 }
 
